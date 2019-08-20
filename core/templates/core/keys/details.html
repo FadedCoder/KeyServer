@@ -10,9 +10,9 @@
 	<b>App ID:</b> {{ key.app.id }}<br>
 	<b>App Name:</b> {{ key.app.name }}<br>
 	<b>Token:</b> {{ key.token }}<br>
-	<b>Description:</b> {% if i.description %}{{ i.description }}{% else %}Not set{% endif %}<br>
-	<b>Active:</b> {% if i.active %}Yes{% else %}No{% endif %}<br>
-	<b>Device Name:</b> {% if i.device_name %}{{ i.device_name }}{% else %}Not set{% endif %}<br>
+	<b>Description:</b> {% if key.description %}{{ key.description }}{% else %}Not set{% endif %}<br>
+	<b>Active:</b> {% if key.active %}Yes{% else %}No{% endif %}<br>
+	<b>Device Name:</b> {% if key.device_name %}{{ key.device_name }}{% else %}Not set{% endif %}<br>
 	<b>Hwid:</b> {{ key.hwid }}<br>
 	<b>Disable At:</b> {{ key.disable_at }}<br>
 	<b>Created At:</b> {{ key.created_at }}<br>
