@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Key{% endblock %}
+{% block content %}
+<h2>Key for App {{ key.app.id }}</h2>
+<a href="{% url 'key_edit' key.id %}" class="btn btn-primary">Modify</a>
+<a href="{% url 'key_delete' key.id %}" class="btn btn-danger">Delete</a>
+<hr>
+<p class="mt-2">
+	<b>ID:</b> {{ key.id }}<br>
+	<b>App ID:</b> {{ key.app.id }}<br>
+	<b>App Name:</b> {{ key.app.name }}<br>
+	<b>Token:</b> {{ key.token }}<br>
+	<b>Description:</b> {% if i.description %}{{ i.description }}{% else %}Not set{% endif %}<br>
+	<b>Active:</b> {% if i.active %}Yes{% else %}No{% endif %}<br>
+	<b>Device Name:</b> {% if i.device_name %}{{ i.device_name }}{% else %}Not set{% endif %}<br>
+	<b>Hwid:</b> {{ key.hwid }}<br>
+	<b>Disable At:</b> {{ key.disable_at }}<br>
+	<b>Created At:</b> {{ key.created_at }}<br>
+	<b>Remaining Activations:</b> {{ key.activations }}<br>
+	<b>Last Activated:</b> {{ key.last_activation }}<br>
+	<b>Last Checked:</b> {{ key.last_check }}
+</p>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Applications{% endblock %}
+{% block content %}
+<h2>Application: {{ app.name }}</h2>
+<p class="mt-2">
+	<b>ID:</b> {{ app.id }}<br>
+	<b>Description:</b> {{ app.description }}<br>
+	<b>No. of keys:</b> {% if keys %}{{ keys|length }}{% else %}0{% endif %}
+</p>
+<a href="{% url 'key_create_app' app.id %}" class="btn btn-success">Create Key</a>
+<a href="{% url 'app_edit' app.id %}" class="btn btn-primary">Modify</a>
+<a href="{% url 'app_delete' app.id %}" class="btn btn-danger">Delete</a>
+<hr>
+{% if keys %}
+{% include 'core/keys/_key_table.html' %}
+{% else %}
+<p>No keys found</p>
+{% endif %}
+{% endblock %}

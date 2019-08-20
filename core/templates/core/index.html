@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<h2>Setup</h2>
+<ol>
+	<li>Create an <a href="{% url 'app_create' %}">Application</a>.</li>
+	<li>Create a <a href="{% url 'key_create' %}">Key</a>. Activations set to <code>-1</code> means unlimited activations.</li>
+</ol>
+<hr>
+<h2>API Endpoints</h2>
+<ul>
+	<li>
+		<h5><code>{{ request.get_host }}{% url 'api_check' %}</code> GET</h5>
+		<p>
+			Used to check if a key is valid. Your application should exit if the response code is not <code>200</code>. This endpoint only accepts the GET method.
+			Sample outputs:
+			<ul>
+				<li>
+					200 Response (Key Found and Ok)
+					<pre class="p-2 bg-light"><code>{"result": "ok"}</code></pre>
+				</li>
+				<li>
+					404 Response (Key Not Found)
+					<pre class="p-2 bg-light"><code>{"result": "failure", "error": "Invalid key"}</code></pre>
+				</li>
+				<li>
+					410 Response (Key Error)
+					<pre class="p-2 bg-light"><code>{"result": "failure", "error": "Key not active"}</code></pre>
+				</li>
+			</ul>
+			Arguments:
+			<ul>
+				<li><code>token</code> - The token of the key to check for.</li>
+				<li><code>app_id</code> - Required ID of the application attempting to activate.</li>
+				<li><code>device_name</code> - (Optional) Name of machine or anything you want. Not used for verification.</li>
+				<li><code>hwid</code> - The same hwid provided during /api/activate (see below).</li>
+			</ul>
+		</p>
+	</li>
+	<li>
+		<h5><code>{{ request.get_host }}{% url 'api_activate' %}</code> POST</h5>
+		<p>
+			Used to check if a key is valid. Your application should exit if the response code is not <code>200</code>. This endpoint only accepts the GET method.
+			Sample outputs:
+			<ul>
+				<li>
+					200 Response (Key Found and Ok)
+					<pre class="p-2 bg-light"><code>{"result": "ok", "remaining_activations": 0}</code></pre>
+				</li>
+				<li>
+					404 Response (Key Not Found)
+					<pre class="p-2 bg-light"><code>{"result": "failure", "error": "Invalid token"}</code></pre>
+				</li>
+				<li>
+					410 Response (Key Error)
+					<pre class="p-2 bg-light"><code>{"result": "failure", "error": "Key not active"}</code></pre>
+					<pre class="p-2 bg-light"><code>{"result": "failure", "error": "No further activations allowed"}</code></pre>
+				</li>
+			</ul>
+			Arguments:
+			<ul>
+				<li><code>token</code> - The token of the key to check for.</li>
+				<li><code>app_id</code> - Required ID of the application attempting to activate.</li>
+				<li><code>device_name</code> - (Optional) Name of machine or anything you want. Not used for verification.</li>
+				<li><code>hwid</code> - Something that identifies the machine this token is being activated on. This should not be stored on the client side but should be unique for each client and should be generated on the client machine (MAC address, etc.).</li>
+			</ul>
+		</p>
+	</li>
+</ul>
+<br>
+<hr>
+<br>
+<h2>Planned Features and To-Do</h2>
+<ul>
+	<li>Implement disable timer</li>
+	<li>Implement bulk key addition</li>
+	<li>User profile page?</li>
+	<li><s>Audit Log</s></li>
+</ul>
+{% endblock %}

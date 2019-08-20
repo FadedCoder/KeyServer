@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Applications{% endblock %}
+{% block content %}
+<h2>Applications</h2>
+<a href="{% url 'app_create' %}" class="btn btn-primary">Create Application</a>
+<hr>
+{% if apps %}
+<table class="table table-hover text-center">
+	<thead class="thead-dark">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">ID</th>
+			<th scope="col">Name</th>
+			<th scope="col">Number of Keys</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in apps %}
+		<tr>
+			<th scope="row">{{ forloop.counter }}</th>
+			<td>{{ i.id }}</td>
+			<td><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></td>
+			<td>{{ i.key_set.all|length }}</td>
+			<td>
+				<a href="{% url 'key_create_app' i.id %}" class="btn btn-outline-success">Create Key</a>
+				<a href="{% url 'app_details' i.id %}" class="btn btn-outline-primary">Details</a>
+				<a href="{% url 'app_edit' i.id %}" class="btn btn-outline-secondary">Modify</a>
+				<a href="{% url 'app_delete' i.id %}" class="btn btn-outline-danger">Delete</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<p>No apps found</p>
+{% endif %}
+{% endblock %}

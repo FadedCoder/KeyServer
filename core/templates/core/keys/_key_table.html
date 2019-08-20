@@ -1,0 +1,32 @@
+<table class="table table-hover text-center">
+	<thead class="thead-dark">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">ID</th>
+			<th scope="col">Token</th>
+			<th scope="col">Active?</th>
+			<th scope="col">Remaining Activations</th>
+			<th scope="col">Created At</th>
+			<th scope="col">Device Name</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in keys %}
+		<tr>
+			<th scope="row">{{ forloop.counter }}</th>
+			<td>{{ i.id }}</td>
+			<td><a href="{{ i.get_absolute_url }}">{{ i.token }}</a></td>
+			<td>{% if i.active %}Yes{% else %}No{% endif %}</td>
+			<td>{{ i.activations }}</td>
+			<td>{{ i.created_at }}</td>
+			<td>{% if i.device_name %}{{ i.device_name }}{% else %}Not set{% endif %}</td>
+			<td>
+				<a href="{% url 'key_details' i.id %}" class="btn btn-outline-primary">Details</a>
+				<a href="{% url 'key_edit' i.id %}" class="btn btn-outline-secondary">Modify</a>
+				<a href="{% url 'key_delete' i.id %}" class="btn btn-outline-danger">Delete</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
