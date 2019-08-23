@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from ipware import get_client_ip
@@ -10,7 +10,6 @@ from . import models
 from . import forms
 
 
-@login_required
 def index(request):
     return render(request, 'core/index.html')
 
