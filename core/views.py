@@ -81,7 +81,7 @@ def key_create(request, app_id=None, key_id=None):
     if key_id:
         key = get_object_or_404(models.Key, pk=key_id)
     if request.method == 'POST':
-        form = forms.KeyForm(request.POST, instance=key)
+        form = forms.KeyForm(request.POST, instance=key, user=request.user)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.user = request.user
@@ -102,14 +102,14 @@ def key_create(request, app_id=None, key_id=None):
             return redirect(obj)
     else:
         if key:
-            form = forms.KeyForm(instance=key)
+            form = forms.KeyForm(instance=key, user=request.user)
         else:
             rand_token = ''.join(
                 [random.choice(string.ascii_uppercase+string.digits) for _ in range(16)])
             initial_data = {'token': rand_token}
             if app:
                 initial_data.update({'app': app})
-            form = forms.KeyForm(initial=initial_data)
+            form = forms.KeyForm(initial=initial_data, user=request.user)
     return render(request, 'core/keys/create.html', {'form': form})
 
 
