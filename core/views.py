@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from ipware import get_client_ip
@@ -27,7 +27,9 @@ def app_index(request):
 def app_create(request, app_id=None):
     app = None
     if app_id:
-        app = get_object_or_404(models.Application, pk=app_id)
+        app = get_object_or_404(models.Application, pk=app_id, user=request.user)
+        if app.user != request.user:
+            return HttpResponse("Unauthorized Access :(", status=403)
     if request.method == 'POST':
         form = forms.ApplicationForm(request.POST, instance=app)
         if form.is_valid():
@@ -42,25 +44,20 @@ def app_create(request, app_id=None):
 
 @login_required
 def app_details(request, app_id):
-    app = get_object_or_404(models.Application, pk=app_id)
+    app = get_object_or_404(models.Application, pk=app_id, user=request.user)
+    if app.user != request.user:
+        return HttpResponse("Unauthorized Access :(", status=403)
     keys = models.Key.objects.filter(app=app)
     return render(request, "core/apps/details.html", {'app': app, 'keys': keys})
 
 
 @login_required
 def app_delete(request, app_id):
-    app = get_object_or_404(models.Application, pk=app_id)
+    app = get_object_or_404(models.Application, pk=app_id, user=request.user)
+    if app.user != request.user:
+        return HttpResponse("Unauthorized Access :(", status=403)
     app.delete()
     return redirect('app_index')
-
-
-@login_required
-def app_index(request):
-    apps = models.Application.objects.filter(user=request.user)
-    context = {
-        'apps': apps,
-    }
-    return render(request, 'core/apps/index.html', context)
 
 
 @login_required
@@ -77,9 +74,13 @@ def key_create(request, app_id=None, key_id=None):
     app = None
     key = None
     if app_id:
-        app = get_object_or_404(models.Application, pk=app_id)
+        app = get_object_or_404(models.Application, pk=app_id, user=request.user)
+        if app.user != request.user:
+            return HttpResponse("Unauthorized Access :(", status=403)
     if key_id:
-        key = get_object_or_404(models.Key, pk=key_id)
+        key = get_object_or_404(models.Key, pk=key_id, user=request.user)
+        if key.user != request.user:
+            return HttpResponse("Unauthorized Access :(", status=403)
     if request.method == 'POST':
         form = forms.KeyForm(request.POST, instance=key, user=request.user)
         if form.is_valid():
@@ -115,13 +116,17 @@ def key_create(request, app_id=None, key_id=None):
 
 @login_required
 def key_details(request, key_id):
-    key = get_object_or_404(models.Key, pk=key_id)
+    key = get_object_or_404(models.Key, pk=key_id, user=request.user)
+    if key.user != request.user:
+        return HttpResponse("Unauthorized Access :(", status=403)
     return render(request, "core/keys/details.html", {'key': key})
 
 
 @login_required
 def key_delete(request, key_id):
-    key = get_object_or_404(models.Key, pk=key_id)
+    key = get_object_or_404(models.Key, pk=key_id, user=request.user)
+    if key.user != request.user:
+        return HttpResponse("Unauthorized Access :(", status=403)
     key.delete()
     return redirect('key_index')
 
