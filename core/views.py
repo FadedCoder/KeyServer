@@ -6,6 +6,7 @@ from ipware import get_client_ip
 import random
 import string
 import datetime
+import json
 from . import models
 from . import forms
 
@@ -220,6 +221,62 @@ def api_activate(request):
             event="KeyActivate")
         return JsonResponse(
             {'result': 'ok', 'remaining_activations': key.activations},
+            status=200)
+    except KeyError as e:
+        return JsonResponse(
+            {'result': 'failure', 'error': f'{e.args[0]} not given'},
+            status=405)
+
+
+@csrf_exempt
+def api_bulk_key_create(request):
+    if request.method != 'POST':
+        return JsonResponse(
+            {'result': 'failure', 'error': 'Only POST allowed'},
+            status=405)
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {'result': 'failure', 'error': 'Error in JSON.'},
+            status=405)
+    try:
+        app_id = data['app_id']
+        master_key = data['master_key']
+        _keys = data['keys']
+        try:
+            app = models.Application.objects.get(id=app_id, master_key=master_key)
+        except (models.Key.DoesNotExist, models.Application.DoesNotExist):
+            return JsonResponse(
+                {'result': 'failure', 'error': 'Invalid token'},
+                status=404)
+        keys = []
+        logs = []
+        ip, routable = get_client_ip(request)
+        if ip:
+            ip += " (Routable)" if routable else " (Unroutable)"
+        for k in _keys:
+            kwargs = {
+                'user': app.user,
+                'app': app,
+                'token': k['token'],
+            }
+            if 'activations' in k:
+                kwargs.update({'activations': k['activations']})
+            if 'active' in k:
+                kwargs.update({'active': k['active']})
+            if 'description' in k:
+                kwargs.update({'description': k['description']})
+            keys.append(models.Key(**kwargs))
+        models.Key.objects.bulk_create(keys)
+        for key in keys:
+            logs.append(models.AuditLog(
+                app=app, key=key, user=app.user,
+                description=f"New key created by {app.user.username} ({ip})",
+                event="KeyCreate"))
+        models.AuditLog.objects.bulk_create(logs)
+        return JsonResponse(
+            {'result': 'ok', 'created': len(keys)},
             status=200)
     except KeyError as e:
         return JsonResponse(

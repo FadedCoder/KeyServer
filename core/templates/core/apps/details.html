@@ -5,6 +5,7 @@
 <p class="mt-2">
 	<b>ID:</b> {{ app.id }}<br>
 	<b>Description:</b> {{ app.description }}<br>
+	<b>Master Key:</b> {{ app.master_key }} <span class="text-danger small">WARNING: Do not save this in client applications.</span><br>
 	<b>No. of keys:</b> {% if keys %}{{ keys|length }}{% else %}0{% endif %}
 </p>
 <a href="{% url 'key_create_app' app.id %}" class="btn btn-success">Create Key</a>

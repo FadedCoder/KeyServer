@@ -18,4 +18,5 @@ urlpatterns = [
     path('log/', views.audit_log, name='audit_log'),
     path('api/check/', views.api_check, name='api_check'),
     path('api/activate/', views.api_activate, name='api_activate'),
+    path('api/bulk-key-create/', views.api_bulk_key_create, name='api_bulk_key_create'),
 ]

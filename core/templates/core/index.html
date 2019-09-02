@@ -10,7 +10,7 @@
 <h2>API Endpoints</h2>
 <ul>
 	<li>
-		<h5><code>{{ request.get_host }}{% url 'api_check' %}</code> GET</h5>
+		<h5><code>https://{{ request.get_host }}{% url 'api_check' %}</code> GET</h5>
 		<p>
 			Used to check if a key is valid. Your application should exit if the response code is not <code>200</code>. This endpoint only accepts the GET method.
 			Sample outputs:
@@ -38,9 +38,9 @@
 		</p>
 	</li>
 	<li>
-		<h5><code>{{ request.get_host }}{% url 'api_activate' %}</code> POST</h5>
+		<h5><code>https://{{ request.get_host }}{% url 'api_activate' %}</code> POST</h5>
 		<p>
-			Used to check if a key is valid. Your application should exit if the response code is not <code>200</code>. This endpoint only accepts the GET method.
+			Used to check if a key is valid. Your application should exit if the response code is not <code>200</code>.
 			Sample outputs:
 			<ul>
 				<li>
@@ -64,6 +64,33 @@
 				<li><code>device_name</code> - (Optional) Name of machine or anything you want. Not used for verification.</li>
 				<li><code>hwid</code> - Something that identifies the machine this token is being activated on. This should not be stored on the client side but should be unique for each client and should be generated on the client machine (MAC address, etc.).</li>
 			</ul>
+		</p>
+	</li>
+	<li>
+		<h5><code>https://{{ request.get_host }}{% url 'api_bulk_key_create' %}</code> POST <small class="text-danger">JSON Required!</small></h5>
+		<p>
+			Used to create multiple keys for a single app. Response code <code>200</code> indicates successful key creation.<br>
+			<span class="text-danger">DO NOT share your app's master key or store it on your applications! If it gets leaked it can be abused.</span>
+			<br>Sample output:
+			<ul>
+				<li>
+					200 Response (Key Found and Ok)
+					<pre class="p-2 bg-light"><code>{"result": "ok", "created": 10}</code></pre>
+				</li>
+			</ul>
+			JSON Post Body:
+			<pre class="p-2 bg-light"><code>{
+    "app_id": &lt;Your app ID, Integer, <span text="text-danger">Required</span>&gt;,
+	"master_key":  &lt;Your app's master key, String, <span text="text-danger">Required</span>&gt;,
+    "keys": [
+        {
+            "token": &lt;Token for key, String (upto 64 characters), <span text="text-danger">Required</span>&gt;,
+            "activations": &lt;Activations for key, Integer, <span>Optional</span>&gt;,
+            "active": &lt;Key active or not, Boolean, <span>Optional</span>&gt
+        },
+        ...
+    ]
+}</code></pre>
 		</p>
 	</li>
 </ul>

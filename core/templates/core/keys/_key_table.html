@@ -3,6 +3,7 @@
 		<tr>
 			<th scope="col">#</th>
 			<th scope="col">ID</th>
+			<th scope="col">App Name</th>
 			<th scope="col">Token</th>
 			<th scope="col">Active?</th>
 			<th scope="col">Remaining Activations</th>
@@ -16,6 +17,7 @@
 		<tr>
 			<th scope="row">{{ forloop.counter }}</th>
 			<td>{{ i.id }}</td>
+			<td>{{ i.app.name }}</td>
 			<td><a href="{{ i.get_absolute_url }}">{{ i.token }}</a></td>
 			<td>{% if i.active %}Yes{% else %}No{% endif %}</td>
 			<td>{{ i.activations }}</td>

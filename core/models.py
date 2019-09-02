@@ -1,11 +1,18 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+import random
+import string
+
+
+def random_string(n):
+    return ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(n)])
 
 
 class Application(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
+    master_key = models.CharField(max_length=128, default=random_string(32))
     description = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
